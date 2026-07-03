@@ -43,8 +43,10 @@ airport code/name — used both for the form dropdown and inside the prompt sent
 reveals a free-text input in `TripForm`). Children only take an age, no nationality — visas are generated
 per unique adult nationality only.
 
-**Model:** `DEFAULT_MODEL` in `src/services/gemini.js` is `gemini-2.0-flash`. If Google renames/retires the
-free-tier model, update that one constant.
+**Model:** `DEFAULT_MODEL` in `src/services/gemini.js` is `gemini-2.5-flash` (the original `gemini-2.0-flash`
+was deprecated and shut down by Google on 2026-06-01, which surfaced as a `limit: 0` quota error unrelated
+to actual usage — if a similar error recurs, check whether the configured model has been retired before
+assuming it's a billing/quota problem).
 
 **RTL/Arabic:** the whole UI is Arabic-first RTL (`index.html` sets `lang="ar" dir="rtl"`). All user-facing
 strings, including data files and prompt text sent to the model, should stay in Arabic to match.

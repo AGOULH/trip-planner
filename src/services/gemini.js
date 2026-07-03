@@ -1,5 +1,5 @@
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
-export const DEFAULT_MODEL = 'gemini-2.0-flash'
+export const DEFAULT_MODEL = 'gemini-2.5-flash'
 
 // نجبر Gemini على الرد عبر استدعاء دالة (function calling) بمخطط JSON محدد بدل تحليل نص حر،
 // هذا يضمن استجابة صالحة دائمًا بدل الاعتماد على تنسيق النص.
