@@ -43,12 +43,18 @@ aistudio.google.com/apikey) is entered in `ApiKeySetup`, persisted to `localStor
 oversight — do not "fix" it by silently routing key handling elsewhere without flagging the tradeoff to
 the user.
 
-**Static data:** `src/data/destinations.js` holds 20 popular destinations (city, country, IATA airport
+**Static data:** `src/data/destinations.js` holds popular destinations (city, country, IATA airport
 code/name) used only as `<datalist>` autocomplete suggestions in `TripForm` — the destination field itself
 is free text (`trip.destination`), not restricted to this list, so the model receives whatever the user
 typed. `src/data/nationalities.js` holds the nationality list used for adults (with an "أخرى" / other
 option that reveals a free-text input in `TripForm`). Children only take an age, no nationality — visas
 are generated per unique adult nationality only.
+
+**Flight price/duration are illustrative only:** `flights.example_options` (2-3 items: airline, approx
+duration, approx price per adult) are AI-generated placeholders for ballpark planning, not real bookable
+fares — Gemini has no live flight-search grounding wired in. `FlightsTab` renders them under an explicit
+disclaimer and always keeps the Google Flights link as the way to check real prices/times. Don't remove
+the disclaimer or present these numbers as live data.
 
 **Budget tab interactivity:** `components/tabs/BudgetTab.jsx` adds a checkbox per budget line so the user
 can toggle items on/off and see a live-recalculated "إجمالي البنود المفعّلة" total, separate from the

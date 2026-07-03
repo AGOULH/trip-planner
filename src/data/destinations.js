@@ -1,4 +1,4 @@
-// 20 وجهة سياحية شائعة للعائلات العربية، مع رمز مطارها الرئيسي (IATA) لبناء روابط الطيران والخرائط
+// وجهات سياحية شائعة للعائلات العربية، مع رمز مطارها الرئيسي (IATA) لبناء روابط الطيران والخرائط
 export const DESTINATIONS = [
   { id: 'istanbul', city: 'إسطنبول', country: 'تركيا', airportCode: 'IST', airportName: 'مطار إسطنبول' },
   { id: 'dubai', city: 'دبي', country: 'الإمارات', airportCode: 'DXB', airportName: 'مطار دبي الدولي' },
@@ -20,4 +20,5 @@ export const DESTINATIONS = [
   { id: 'munich', city: 'ميونخ', country: 'ألمانيا', airportCode: 'MUC', airportName: 'مطار ميونخ' },
   { id: 'amsterdam', city: 'أمستردام', country: 'هولندا', airportCode: 'AMS', airportName: 'مطار سخيبول' },
   { id: 'tokyo', city: 'طوكيو', country: 'اليابان', airportCode: 'NRT', airportName: 'مطار ناريتا الدولي' },
+  { id: 'krakow', city: 'كراكوف', country: 'بولندا', airportCode: 'KRK', airportName: 'مطار كراكوف بالتسه' },
 ]

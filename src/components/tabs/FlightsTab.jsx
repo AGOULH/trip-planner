@@ -37,6 +37,25 @@ export default function FlightsTab({ flights }) {
 
       {flights.notes && <p className="notes">{flights.notes}</p>}
 
+      {flights.example_options?.length > 0 && (
+        <div className="example-flights">
+          <h3>أمثلة توضيحية تقريبية</h3>
+          <p className="notes disclaimer">
+            هذه أسعار ومدد تقريبية لإعطاء فكرة عامة فقط، وليست عروض حجز حقيقية — تحقق دائمًا من السعر
+            والمواعيد الفعلية عبر رابط Google Flights أدناه.
+          </p>
+          <ul className="example-flights-list">
+            {flights.example_options.map((option, i) => (
+              <li key={i} className="example-flight-item">
+                <span className="example-flight-airline">{option.airline}</span>
+                <span className="muted">{option.approx_duration}</span>
+                <span className="example-flight-price">{option.approx_price_per_adult}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {flights.google_flights_url && (
         <a className="btn-primary link-btn" href={flights.google_flights_url} target="_blank" rel="noreferrer">
           بحث الرحلات على Google Flights

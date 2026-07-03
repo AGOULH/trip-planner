@@ -12,7 +12,7 @@ const TRIP_PLAN_FUNCTION = {
     properties: {
       flights: {
         type: 'object',
-        required: ['from_airport_name', 'to_airport_name', 'distance_to_center_km', 'duration_to_center_minutes', 'google_flights_url', 'notes', 'flight_type', 'stopover_notes'],
+        required: ['from_airport_name', 'to_airport_name', 'distance_to_center_km', 'duration_to_center_minutes', 'google_flights_url', 'notes', 'flight_type', 'stopover_notes', 'example_options'],
         properties: {
           from_airport_name: { type: 'string', description: 'اسم مطار الانطلاق' },
           to_airport_name: { type: 'string', description: 'اسم مطار الوجهة' },
@@ -22,6 +22,19 @@ const TRIP_PLAN_FUNCTION = {
           notes: { type: 'string', description: 'ملاحظات عن أفضل وقت للحجز أو شركات طيران مناسبة للعائلات' },
           flight_type: { type: 'string', enum: ['مباشرة', 'غير مباشرة'], description: 'هل أغلب الرحلات المتاحة مباشرة أم بها توقف، مع مراعاة تفضيل المستخدم إن وُجد' },
           stopover_notes: { type: 'string', description: 'إذا كانت الرحلة غير مباشرة: مدينة/مدن التوقف وعدد التوقفات ومدتها التقريبية، وإلا اتركه فارغًا' },
+          example_options: {
+            type: 'array',
+            description: 'مثالان أو ثلاثة أمثلة توضيحية تقريبية (ليست عروض حجز حقيقية) لشركات طيران تشغّل هذا الخط عادة، لإعطاء فكرة عن المدة والسعر التقريبي فقط',
+            items: {
+              type: 'object',
+              required: ['airline', 'approx_duration', 'approx_price_per_adult'],
+              properties: {
+                airline: { type: 'string', description: 'اسم شركة طيران معروفة تشغّل هذا الخط عادة' },
+                approx_duration: { type: 'string', description: 'مدة الرحلة التقريبية (مثال: 4 ساعات 30 دقيقة)' },
+                approx_price_per_adult: { type: 'string', description: 'سعر تقريبي للتذكرة الواحدة ذهاب وعودة للبالغ الواحد، مع العملة' },
+              },
+            },
+          },
         },
       },
       visas: {
@@ -151,7 +164,9 @@ ${childrenList}
 المطلوب تسليمه عبر استدعاء الدالة submit_trip_plan:
 1. تفاصيل الطيران: المسافة من المطار إلى مركز المدينة، ورابط بحث حقيقي وصالح على Google Flights، مع تحديد
    هل الرحلة مباشرة أم غير مباشرة (وإذا غير مباشرة اذكر مدينة/مدن التوقف) مع مراعاة تفضيل المستخدم أعلاه
-   إن وُجد.
+   إن وُجد. أضف أيضًا مثالين أو ثلاثة أمثلة توضيحية تقريبية (شركة طيران معروفة تشغّل هذا الخط عادة، مدة
+   تقريبية، وسعر تقريبي للبالغ الواحد) لإعطاء فكرة عامة فقط عن التكلفة والمدة — وضّح أنها تقديرية وليست
+   عروض حجز فعلية، والسعر الحقيقي يُتحقق منه عبر رابط Google Flights.
 2. متطلبات التأشيرة لكل جنسية من جنسيات البالغين المذكورة أعلاه.
 3. ثلاث خيارات سكن (اقتصادي، متوسط، فاخر) مع رابط خرائط جوجل لكل خيار ورابط عام لمنطقة الإقامة الأفضل.
 4. برنامج يومي كامل لعدد الأيام المحدد، يتضمن لكل يوم: وسيلة النقل المناسبة (مترو أو تاكسي)، معالم سياحية
