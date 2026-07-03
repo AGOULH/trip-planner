@@ -10,6 +10,7 @@ export default function TripForm({ onSubmit, submitting }) {
   const [destination, setDestination] = useState('')
   const [travelDate, setTravelDate] = useState('')
   const [numberOfDays, setNumberOfDays] = useState(5)
+  const [flightPreference, setFlightPreference] = useState('أي')
   const [adults, setAdults] = useState([emptyAdult()])
   const [children, setChildren] = useState([])
   const [formError, setFormError] = useState('')
@@ -46,6 +47,7 @@ export default function TripForm({ onSubmit, submitting }) {
       destination: destination.trim(),
       travelDate,
       numberOfDays: Number(numberOfDays),
+      flightPreference,
       adults: adults.map((a) => ({
         nationality: a.nationality === 'أخرى' ? (a.customNationality.trim() || 'غير محددة') : a.nationality,
       })),
@@ -98,6 +100,15 @@ export default function TripForm({ onSubmit, submitting }) {
             value={numberOfDays}
             onChange={(e) => setNumberOfDays(e.target.value)}
           />
+        </label>
+
+        <label>
+          نوع الرحلة المفضّل
+          <select value={flightPreference} onChange={(e) => setFlightPreference(e.target.value)}>
+            <option value="أي">بدون تفضيل</option>
+            <option value="مباشرة">مباشرة فقط</option>
+            <option value="غير مباشرة">غير مباشرة (تتضمن توقف)</option>
+          </select>
         </label>
       </div>
 

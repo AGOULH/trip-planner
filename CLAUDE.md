@@ -57,6 +57,15 @@ AI-provided `budget.total`. Amounts from the model are free-text strings (e.g. `
 and flagged with a note. Checkbox state resets whenever a new `budget` object is passed in (new plan
 generated).
 
+**Flight type preference:** `TripForm` has a `flightPreference` select (`أي` / `مباشرة` / `غير مباشرة`,
+default `أي`) sent as a line in the prompt built by `buildPrompt()` in `gemini.js`. The model always
+returns `flights.flight_type` and `flights.stopover_notes` regardless of preference — `FlightsTab` shows
+the type as a badge and only shows stopover notes when the type is `غير مباشرة`.
+
+**Per-day weather:** each `itinerary` day requires `temperature_high_c`, `temperature_low_c`, and
+`weather_description` in the schema (estimated by the model for that date/destination — there's no real
+weather API call). `ItineraryTab` renders these as a small line under the day header.
+
 **Model:** `DEFAULT_MODEL` in `src/services/gemini.js` is `gemini-2.5-flash` (the original `gemini-2.0-flash`
 was deprecated and shut down by Google on 2026-06-01, which surfaced as a `limit: 0` quota error unrelated
 to actual usage — if a similar error recurs, check whether the configured model has been retired before

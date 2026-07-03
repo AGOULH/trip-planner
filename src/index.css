@@ -327,6 +327,9 @@ legend {
 
 .info-value {
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .notes {
@@ -430,6 +433,14 @@ legend {
   margin: 0 0 10px;
   font-size: 0.9rem;
   color: var(--muted);
+}
+
+.weather-line {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .activity-list {

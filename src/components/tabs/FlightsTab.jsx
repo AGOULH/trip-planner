@@ -12,6 +12,13 @@ export default function FlightsTab({ flights }) {
           <span className="info-value">{flights.to_airport_name}</span>
         </div>
         <div className="info-box">
+          <span className="info-label">نوع الرحلة</span>
+          <span className="info-value">
+            {flights.flight_type}
+            {flights.flight_type === 'مباشرة' && <span className="badge badge-ok">بدون توقف</span>}
+          </span>
+        </div>
+        <div className="info-box">
           <span className="info-label">المسافة إلى مركز المدينة</span>
           <span className="info-value">{flights.distance_to_center_km} كم</span>
         </div>
@@ -20,6 +27,13 @@ export default function FlightsTab({ flights }) {
           <span className="info-value">{flights.duration_to_center_minutes} دقيقة</span>
         </div>
       </div>
+
+      {flights.flight_type === 'غير مباشرة' && flights.stopover_notes && (
+        <p className="notes">
+          <strong>تفاصيل التوقف: </strong>
+          {flights.stopover_notes}
+        </p>
+      )}
 
       {flights.notes && <p className="notes">{flights.notes}</p>}
 

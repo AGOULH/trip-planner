@@ -18,6 +18,17 @@ export default function ItineraryTab({ itinerary }) {
             </h3>
             <span className="day-date">{day.date}</span>
           </div>
+          {(day.temperature_high_c != null || day.weather_description) && (
+            <p className="weather-line">
+              <span>🌡️</span>
+              {day.temperature_high_c != null && day.temperature_low_c != null && (
+                <span>
+                  {day.temperature_high_c}° / {day.temperature_low_c}°
+                </span>
+              )}
+              {day.weather_description && <span className="muted">{day.weather_description}</span>}
+            </p>
+          )}
           {day.transport && (
             <p className="transport-line">
               <strong>وسيلة النقل: </strong>

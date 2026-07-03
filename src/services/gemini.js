@@ -12,7 +12,7 @@ const TRIP_PLAN_FUNCTION = {
     properties: {
       flights: {
         type: 'object',
-        required: ['from_airport_name', 'to_airport_name', 'distance_to_center_km', 'duration_to_center_minutes', 'google_flights_url', 'notes'],
+        required: ['from_airport_name', 'to_airport_name', 'distance_to_center_km', 'duration_to_center_minutes', 'google_flights_url', 'notes', 'flight_type', 'stopover_notes'],
         properties: {
           from_airport_name: { type: 'string', description: 'اسم مطار الانطلاق' },
           to_airport_name: { type: 'string', description: 'اسم مطار الوجهة' },
@@ -20,6 +20,8 @@ const TRIP_PLAN_FUNCTION = {
           duration_to_center_minutes: { type: 'number', description: 'مدة التنقل بالدقائق من المطار إلى المركز' },
           google_flights_url: { type: 'string', description: 'رابط بحث جوجل فلايتس بين المدينتين والتاريخ المحدد' },
           notes: { type: 'string', description: 'ملاحظات عن أفضل وقت للحجز أو شركات طيران مناسبة للعائلات' },
+          flight_type: { type: 'string', enum: ['مباشرة', 'غير مباشرة'], description: 'هل أغلب الرحلات المتاحة مباشرة أم بها توقف، مع مراعاة تفضيل المستخدم إن وُجد' },
+          stopover_notes: { type: 'string', description: 'إذا كانت الرحلة غير مباشرة: مدينة/مدن التوقف وعدد التوقفات ومدتها التقريبية، وإلا اتركه فارغًا' },
         },
       },
       visas: {
@@ -66,12 +68,15 @@ const TRIP_PLAN_FUNCTION = {
         description: 'برنامج يومي مفصل بعدد أيام الرحلة',
         items: {
           type: 'object',
-          required: ['day', 'date', 'title', 'transport', 'activities'],
+          required: ['day', 'date', 'title', 'transport', 'activities', 'temperature_high_c', 'temperature_low_c', 'weather_description'],
           properties: {
             day: { type: 'number' },
             date: { type: 'string' },
             title: { type: 'string' },
             transport: { type: 'string', description: 'وسائل النقل المقترحة لليوم: مترو، تاكسي، مشي، إلخ' },
+            temperature_high_c: { type: 'number', description: 'أعلى درجة حرارة متوقعة بالمئوية في هذا اليوم بهذه الوجهة' },
+            temperature_low_c: { type: 'number', description: 'أدنى درجة حرارة متوقعة بالمئوية في هذا اليوم بهذه الوجهة' },
+            weather_description: { type: 'string', description: 'وصف موجز للطقس المتوقع (مثال: مشمس، ماطر، غائم) مع نصيحة لباس مناسبة' },
             activities: {
               type: 'array',
               items: {
@@ -126,22 +131,32 @@ function buildPrompt(trip) {
     ? trip.children.map((c, i) => `  ${i + 1}. العمر: ${c.age} سنة`).join('\n')
     : '  لا يوجد أطفال'
 
+  const flightPreferenceLine =
+    trip.flightPreference && trip.flightPreference !== 'أي'
+      ? `- تفضيل نوع الرحلة: ${trip.flightPreference} فقط`
+      : '- تفضيل نوع الرحلة: بدون تفضيل (اقترح الأنسب)'
+
   return `خطّط رحلة عائلية بالتفصيل بناءً على المعطيات التالية:
 
 - مدينة المغادرة: ${trip.departureCity}
 - الوجهة: ${trip.destination}
 - تاريخ السفر: ${trip.travelDate}
 - عدد أيام الرحلة: ${trip.numberOfDays}
+${flightPreferenceLine}
 - البالغون (${trip.adults.length}):
 ${adultsList}
 - الأطفال (${trip.children.length}):
 ${childrenList}
 
 المطلوب تسليمه عبر استدعاء الدالة submit_trip_plan:
-1. تفاصيل الطيران: المسافة من المطار إلى مركز المدينة، ورابط بحث حقيقي وصالح على Google Flights.
+1. تفاصيل الطيران: المسافة من المطار إلى مركز المدينة، ورابط بحث حقيقي وصالح على Google Flights، مع تحديد
+   هل الرحلة مباشرة أم غير مباشرة (وإذا غير مباشرة اذكر مدينة/مدن التوقف) مع مراعاة تفضيل المستخدم أعلاه
+   إن وُجد.
 2. متطلبات التأشيرة لكل جنسية من جنسيات البالغين المذكورة أعلاه.
 3. ثلاث خيارات سكن (اقتصادي، متوسط، فاخر) مع رابط خرائط جوجل لكل خيار ورابط عام لمنطقة الإقامة الأفضل.
-4. برنامج يومي كامل لعدد الأيام المحدد، يتضمن لكل يوم: وسيلة النقل المناسبة (مترو أو تاكسي)، معالم سياحية مناسبة للعائلات، مطاعم حلال (halal: true)، وأماكن تسوق، مع رابط خرائط جوجل صحيح لكل نشاط.
+4. برنامج يومي كامل لعدد الأيام المحدد، يتضمن لكل يوم: وسيلة النقل المناسبة (مترو أو تاكسي)، معالم سياحية
+   مناسبة للعائلات، مطاعم حلال (halal: true)، أماكن تسوق، ودرجات الحرارة المتوقعة (العليا والدنيا بالمئوية)
+   ووصف موجز للطقس في ذلك التاريخ بهذه الوجهة، مع رابط خرائط جوجل صحيح لكل نشاط.
 5. ميزانية تفصيلية تشمل الطيران والسكن والطعام والتنقل والأنشطة والتسوق، بعملة مناسبة، لكامل العائلة (${trip.adults.length} بالغين و ${trip.children.length} أطفال) طوال ${trip.numberOfDays} أيام.
 6. نصائح عملية للسفر العائلي إلى هذه الوجهة (ثقافية، صحية، تتعلق بالأطفال).
 
