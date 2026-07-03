@@ -1,13 +1,12 @@
-const API_URL = 'https://api.anthropic.com/v1/messages'
-const ANTHROPIC_VERSION = '2023-06-01'
-export const DEFAULT_MODEL = 'claude-sonnet-5'
+const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
+export const DEFAULT_MODEL = 'gemini-2.0-flash'
 
-// نجبر Claude على الرد عبر أداة (tool) بمخطط JSON محدد بدل تحليل نص حر،
+// نجبر Gemini على الرد عبر استدعاء دالة (function calling) بمخطط JSON محدد بدل تحليل نص حر،
 // هذا يضمن استجابة صالحة دائمًا بدل الاعتماد على تنسيق النص.
-const TRIP_PLAN_TOOL = {
+const TRIP_PLAN_FUNCTION = {
   name: 'submit_trip_plan',
   description: 'تسليم خطة رحلة عائلية كاملة ومنظمة بصيغة JSON',
-  input_schema: {
+  parameters: {
     type: 'object',
     required: ['flights', 'visas', 'accommodation', 'itinerary', 'budget', 'tips'],
     properties: {
@@ -138,7 +137,7 @@ ${adultsList}
 - الأطفال (${trip.children.length}):
 ${childrenList}
 
-المطلوب تسليمه عبر أداة submit_trip_plan:
+المطلوب تسليمه عبر استدعاء الدالة submit_trip_plan:
 1. تفاصيل الطيران: المسافة من المطار إلى مركز المدينة، ورابط بحث حقيقي وصالح على Google Flights.
 2. متطلبات التأشيرة لكل جنسية من جنسيات البالغين المذكورة أعلاه.
 3. ثلاث خيارات سكن (اقتصادي، متوسط، فاخر) مع رابط خرائط جوجل لكل خيار ورابط عام لمنطقة الإقامة الأفضل.
@@ -151,20 +150,18 @@ ${childrenList}
 }
 
 export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) {
-  const response = await fetch(API_URL, {
+  const url = `${API_BASE}/${model}:generateContent?key=${encodeURIComponent(apiKey)}`
+
+  const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': ANTHROPIC_VERSION,
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      model,
-      max_tokens: 8000,
-      tools: [TRIP_PLAN_TOOL],
-      tool_choice: { type: 'tool', name: 'submit_trip_plan' },
-      messages: [{ role: 'user', content: buildPrompt(trip) }],
+      contents: [{ role: 'user', parts: [{ text: buildPrompt(trip) }] }],
+      tools: [{ function_declarations: [TRIP_PLAN_FUNCTION] }],
+      tool_config: {
+        function_calling_config: { mode: 'ANY', allowed_function_names: ['submit_trip_plan'] },
+      },
+      generationConfig: { maxOutputTokens: 8000 },
     }),
   })
 
@@ -175,9 +172,10 @@ export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) 
   }
 
   const data = await response.json()
-  const toolUse = data.content?.find((block) => block.type === 'tool_use' && block.name === 'submit_trip_plan')
-  if (!toolUse) {
-    throw new Error('لم يستطع Claude إنشاء خطة منظمة، حاول مجددًا')
+  const parts = data.candidates?.[0]?.content?.parts || []
+  const call = parts.find((p) => p.functionCall)?.functionCall
+  if (!call?.args) {
+    throw new Error('لم يستطع Gemini إنشاء خطة منظمة، حاول مجددًا')
   }
-  return toolUse.input
+  return call.args
 }

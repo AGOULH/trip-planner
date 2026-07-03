@@ -6,14 +6,19 @@ export default function ApiKeySetup({ apiKey, onSave }) {
 
   return (
     <div className="card api-key-card">
-      <h2>مفتاح Anthropic API</h2>
+      <h2>مفتاح Google Gemini API</h2>
       <p className="muted">
-        يُستخدم مفتاحك لإنشاء خطة الرحلة عبر Claude، ويُحفظ في متصفحك فقط ولا يُرسل لأي جهة أخرى.
+        يُستخدم مفتاحك لإنشاء خطة الرحلة عبر Gemini (مجاني)، ويُحفظ في متصفحك فقط ولا يُرسل لأي جهة أخرى
+        سوى Google مباشرة. احصل عليه من{' '}
+        <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">
+          aistudio.google.com/apikey
+        </a>
+        .
       </p>
       <div className="api-key-row">
         <input
           type={visible ? 'text' : 'password'}
-          placeholder="sk-ant-..."
+          placeholder="AIza..."
           value={value}
           onChange={(e) => setValue(e.target.value)}
           dir="ltr"

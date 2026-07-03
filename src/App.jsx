@@ -3,9 +3,9 @@ import ApiKeySetup from './components/ApiKeySetup'
 import TripForm from './components/TripForm'
 import ResultView from './components/ResultView'
 import Loader from './components/Loader'
-import { generateTripPlan } from './services/claude'
+import { generateTripPlan } from './services/gemini'
 
-const API_KEY_STORAGE_KEY = 'trip_planner_anthropic_api_key'
+const API_KEY_STORAGE_KEY = 'trip_planner_gemini_api_key'
 
 function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem(API_KEY_STORAGE_KEY) || '')
@@ -23,7 +23,7 @@ function App() {
     setPlan(null)
 
     if (!apiKey) {
-      setError('الرجاء إدخال مفتاح Anthropic API أولًا')
+      setError('الرجاء إدخال مفتاح Google Gemini API أولًا')
       return
     }
 
