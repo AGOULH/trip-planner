@@ -129,7 +129,7 @@ function buildPrompt(trip) {
   return `خطّط رحلة عائلية بالتفصيل بناءً على المعطيات التالية:
 
 - مدينة المغادرة: ${trip.departureCity}
-- الوجهة: ${trip.destinationCity}, ${trip.destinationCountry}
+- الوجهة: ${trip.destination}
 - تاريخ السفر: ${trip.travelDate}
 - عدد أيام الرحلة: ${trip.numberOfDays}
 - البالغون (${trip.adults.length}):

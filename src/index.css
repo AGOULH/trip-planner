@@ -514,6 +514,22 @@ legend {
   border-top: 2px solid var(--border);
 }
 
+.budget-table .checkbox-col {
+  width: 32px;
+  padding-inline-end: 0;
+}
+
+.budget-row-off td {
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.budget-selected-row td {
+  color: var(--accent);
+  border-top: none;
+}
+
 .notes-cell {
   color: var(--muted);
   font-size: 0.88rem;

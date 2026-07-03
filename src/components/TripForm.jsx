@@ -7,7 +7,7 @@ const emptyChild = () => ({ id: crypto.randomUUID(), age: 5 })
 
 export default function TripForm({ onSubmit, submitting }) {
   const [departureCity, setDepartureCity] = useState('')
-  const [destinationId, setDestinationId] = useState(DESTINATIONS[0].id)
+  const [destination, setDestination] = useState('')
   const [travelDate, setTravelDate] = useState('')
   const [numberOfDays, setNumberOfDays] = useState(5)
   const [adults, setAdults] = useState([emptyAdult()])
@@ -27,6 +27,10 @@ export default function TripForm({ onSubmit, submitting }) {
       setFormError('الرجاء إدخال مدينة المغادرة')
       return
     }
+    if (!destination.trim()) {
+      setFormError('الرجاء إدخال الوجهة السياحية')
+      return
+    }
     if (!travelDate) {
       setFormError('الرجاء اختيار تاريخ السفر')
       return
@@ -37,13 +41,9 @@ export default function TripForm({ onSubmit, submitting }) {
     }
     setFormError('')
 
-    const destination = DESTINATIONS.find((d) => d.id === destinationId)
     onSubmit({
       departureCity: departureCity.trim(),
-      destinationCity: destination.city,
-      destinationCountry: destination.country,
-      destinationAirportCode: destination.airportCode,
-      destinationAirportName: destination.airportName,
+      destination: destination.trim(),
       travelDate,
       numberOfDays: Number(numberOfDays),
       adults: adults.map((a) => ({
@@ -70,13 +70,18 @@ export default function TripForm({ onSubmit, submitting }) {
 
         <label>
           الوجهة السياحية
-          <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)}>
+          <input
+            type="text"
+            list="destination-suggestions"
+            placeholder="مثال: دبي، الإمارات"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
+          />
+          <datalist id="destination-suggestions">
             {DESTINATIONS.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.city} - {d.country}
-              </option>
+              <option key={d.id} value={`${d.city}، ${d.country}`} />
             ))}
-          </select>
+          </datalist>
         </label>
 
         <label>
