@@ -161,7 +161,7 @@ export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) 
       toolConfig: {
         functionCallingConfig: { mode: 'ANY', allowedFunctionNames: ['submit_trip_plan'] },
       },
-      generationConfig: { maxOutputTokens: 8000 },
+      generationConfig: { maxOutputTokens: 8000, thinkingConfig: { thinkingBudget: 0 } },
     }),
   })
 
@@ -172,11 +172,17 @@ export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) 
   }
 
   const data = await response.json()
-  const parts = data.candidates?.[0]?.content?.parts || []
+  const candidate = data.candidates?.[0]
+  const parts = candidate?.content?.parts || []
   const call = parts.find((p) => p.functionCall)?.functionCall
   if (!call?.args) {
     const fallbackText = parts.find((p) => p.text)?.text
-    throw new Error(fallbackText ? `لم يستطع Gemini إنشاء خطة منظمة: ${fallbackText}` : 'لم يستطع Gemini إنشاء خطة منظمة، حاول مجددًا')
+    const reason = candidate?.finishReason ? ` (${candidate.finishReason})` : ''
+    throw new Error(
+      fallbackText
+        ? `لم يستطع Gemini إنشاء خطة منظمة: ${fallbackText}`
+        : `لم يستطع Gemini إنشاء خطة منظمة، حاول مجددًا${reason}`,
+    )
   }
   return call.args
 }

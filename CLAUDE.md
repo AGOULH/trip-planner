@@ -62,6 +62,13 @@ was deprecated and shut down by Google on 2026-06-01, which surfaced as a `limit
 to actual usage — if a similar error recurs, check whether the configured model has been retired before
 assuming it's a billing/quota problem).
 
+**Thinking must stay disabled:** `generationConfig.thinkingConfig.thinkingBudget` is set to `0`. Gemini
+2.5/3 Flash models do internal "thinking" by default whose tokens are drawn from the same
+`maxOutputTokens` budget — with thinking left on, it can consume the entire budget before the model emits
+the actual `functionCall`, producing a response with no function call and no text (a confusing empty
+failure, not an HTTP error). Don't remove `thinkingBudget: 0` without also raising `maxOutputTokens`
+substantially to compensate.
+
 **RTL/Arabic:** the whole UI is Arabic-first RTL (`index.html` sets `lang="ar" dir="rtl"`). All user-facing
 strings, including data files and prompt text sent to the model, should stay in Arabic to match.
 
