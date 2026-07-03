@@ -1,0 +1,23 @@
+// 20 وجهة سياحية شائعة للعائلات العربية، مع رمز مطارها الرئيسي (IATA) لبناء روابط الطيران والخرائط
+export const DESTINATIONS = [
+  { id: 'istanbul', city: 'إسطنبول', country: 'تركيا', airportCode: 'IST', airportName: 'مطار إسطنبول' },
+  { id: 'dubai', city: 'دبي', country: 'الإمارات', airportCode: 'DXB', airportName: 'مطار دبي الدولي' },
+  { id: 'london', city: 'لندن', country: 'بريطانيا', airportCode: 'LHR', airportName: 'مطار هيثرو' },
+  { id: 'paris', city: 'باريس', country: 'فرنسا', airportCode: 'CDG', airportName: 'مطار شارل ديغول' },
+  { id: 'kualalumpur', city: 'كوالالمبور', country: 'ماليزيا', airportCode: 'KUL', airportName: 'مطار كوالالمبور الدولي' },
+  { id: 'bangkok', city: 'بانكوك', country: 'تايلاند', airportCode: 'BKK', airportName: 'مطار سوفارنابومي' },
+  { id: 'tbilisi', city: 'تبليسي', country: 'جورجيا', airportCode: 'TBS', airportName: 'مطار تبليسي الدولي' },
+  { id: 'baku', city: 'باكو', country: 'أذربيجان', airportCode: 'GYD', airportName: 'مطار حيدر علييف' },
+  { id: 'sarajevo', city: 'سراييفو', country: 'البوسنة والهرسك', airportCode: 'SJJ', airportName: 'مطار سراييفو الدولي' },
+  { id: 'cairo', city: 'القاهرة', country: 'مصر', airportCode: 'CAI', airportName: 'مطار القاهرة الدولي' },
+  { id: 'marrakech', city: 'مراكش', country: 'المغرب', airportCode: 'RAK', airportName: 'مطار مراكش المنارة' },
+  { id: 'amman', city: 'عمّان', country: 'الأردن', airportCode: 'AMM', airportName: 'مطار الملكة علياء الدولي' },
+  { id: 'athens', city: 'أثينا', country: 'اليونان', airportCode: 'ATH', airportName: 'مطار أثينا الدولي' },
+  { id: 'rome', city: 'روما', country: 'إيطاليا', airportCode: 'FCO', airportName: 'مطار فيوميتشينو' },
+  { id: 'barcelona', city: 'برشلونة', country: 'إسبانيا', airportCode: 'BCN', airportName: 'مطار برشلونة الدولي' },
+  { id: 'zurich', city: 'زيورخ', country: 'سويسرا', airportCode: 'ZRH', airportName: 'مطار زيورخ' },
+  { id: 'vienna', city: 'فيينا', country: 'النمسا', airportCode: 'VIE', airportName: 'مطار فيينا الدولي' },
+  { id: 'munich', city: 'ميونخ', country: 'ألمانيا', airportCode: 'MUC', airportName: 'مطار ميونخ' },
+  { id: 'amsterdam', city: 'أمستردام', country: 'هولندا', airportCode: 'AMS', airportName: 'مطار سخيبول' },
+  { id: 'tokyo', city: 'طوكيو', country: 'اليابان', airportCode: 'NRT', airportName: 'مطار ناريتا الدولي' },
+]
