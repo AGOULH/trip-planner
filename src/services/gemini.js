@@ -157,9 +157,9 @@ export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) 
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       contents: [{ role: 'user', parts: [{ text: buildPrompt(trip) }] }],
-      tools: [{ function_declarations: [TRIP_PLAN_FUNCTION] }],
-      tool_config: {
-        function_calling_config: { mode: 'ANY', allowed_function_names: ['submit_trip_plan'] },
+      tools: [{ functionDeclarations: [TRIP_PLAN_FUNCTION] }],
+      toolConfig: {
+        functionCallingConfig: { mode: 'ANY', allowedFunctionNames: ['submit_trip_plan'] },
       },
       generationConfig: { maxOutputTokens: 8000 },
     }),
@@ -175,7 +175,8 @@ export async function generateTripPlan({ apiKey, trip, model = DEFAULT_MODEL }) 
   const parts = data.candidates?.[0]?.content?.parts || []
   const call = parts.find((p) => p.functionCall)?.functionCall
   if (!call?.args) {
-    throw new Error('لم يستطع Gemini إنشاء خطة منظمة، حاول مجددًا')
+    const fallbackText = parts.find((p) => p.text)?.text
+    throw new Error(fallbackText ? `لم يستطع Gemini إنشاء خطة منظمة: ${fallbackText}` : 'لم يستطع Gemini إنشاء خطة منظمة، حاول مجددًا')
   }
   return call.args
 }
